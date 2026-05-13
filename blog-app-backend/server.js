@@ -29,6 +29,7 @@ app.use("/auth", commonApp);
 //connect to db
 const connectDB = async () => {
   try {
+    console.log(process.env.DB_URL);
     await connect(process.env.DB_URL);
     console.log("DB connected");
     const port = process.env.PORT || 4000;
