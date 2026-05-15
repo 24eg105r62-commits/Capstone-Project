@@ -11,7 +11,7 @@ function Home() {
           `${import.meta.env.VITE_API_URL}/articles`,
         );
         const data = await response.json();
-        setArticles(data);
+        setArticles(response.data.payload);
       } catch (error) {
         console.error(error);
       }
