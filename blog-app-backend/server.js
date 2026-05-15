@@ -18,7 +18,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // local frontend
-      "https://capstone-project-1-axat.onrender.com", // deployed frontend
+      "import.meta.env.VITE_API_URL", // deployed frontend
     ],
     credentials: true,
   })

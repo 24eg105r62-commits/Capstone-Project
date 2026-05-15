@@ -7,7 +7,7 @@ function Home() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch("https://capstone-project-1-axat.onrender.com/articles");
+        const response = await fetch("import.meta.env.VITE_API_URL + /articles");
         const data = await response.json();
         setArticles(data);
       } catch (error) {

@@ -51,7 +51,7 @@ function ArticleByID() {
 
       try {
         const res = await axios.get(
-  `https://capstone-project-1-axat.onrender.com/user-api/article/${id}`,
+  `import.meta.env.VITE_API_URL + /user-api/article/${id}`,
   { withCredentials: true }
 );
 
