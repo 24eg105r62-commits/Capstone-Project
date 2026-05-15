@@ -7,7 +7,7 @@ function Home() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch("http://localhost:3000/articles");
+        const response = await fetch("https://capstone-project-1-axat.onrender.com/articles");
         const data = await response.json();
         setArticles(data);
       } catch (error) {

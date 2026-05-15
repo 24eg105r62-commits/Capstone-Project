@@ -7,62 +7,85 @@ import { authorApp } from "./APIs/AuthorAPI.js";
 import { adminApp } from "./APIs/AdminAPI.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+
 config();
-//create express app
+
+// create express app
 const app = exp();
 
+// CORS configuration
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173", // local frontend
+      "https://capstone-project-1-axat.onrender.com", // deployed frontend
+    ],
     credentials: true,
-  }),
+  })
 );
+
 app.use(cookieParser());
-//body parser middleware
+
+// body parser middleware
 app.use(exp.json());
-//path level middleware
+
+// path level middleware
 app.use("/user-api", userApp);
 app.use("/author-api", authorApp);
 app.use("/admin-api", adminApp);
 app.use("/auth", commonApp);
 
-//connect to db
+// connect to DB
 const connectDB = async () => {
   try {
+    console.log("DB_URL =", process.env.DB_URL);
+
     await connect(process.env.DB_URL);
+
     console.log("DB connected");
+
     const port = process.env.PORT || 4000;
-    app.listen(port, () => console.log(`server listening on ${port}`));
+
+    app.listen(port, () =>
+      console.log(`server listening on ${port}`)
+    );
   } catch (err) {
-    console.log(err);
+    console.log("DB ERROR:", err);
   }
 };
+
 connectDB();
 
-//to handle inavlid path
+// handle invalid path
 app.use((req, res, next) => {
   console.log(req.url);
-  res.status(404).json({ message: `${req.url} is invalid` });
+
+  res.status(404).json({
+    message: `${req.url} is invalid`,
+  });
 });
 
-//to handle error
+// global error handler
 app.use((err, req, res, next) => {
-  //console.log(err.name)
-  //console.log(err.message)
-  //validation error
+  // validation error
   if (err.name === "ValidationError") {
-    return res
-      .status(400)
-      .json({ message: "error occurred", error: err.message });
+    return res.status(400).json({
+      message: "error occurred",
+      error: err.message,
+    });
   }
-  //cast error
+
+  // cast error
   if (err.name === "CastError") {
-    return res
-      .status(400)
-      .json({ message: "error occurred", error: err.message });
+    return res.status(400).json({
+      message: "error occurred",
+      error: err.message,
+    });
   }
-  //any server side error
-  res
-    .status(500)
-    .json({ message: "error occured", error: "server side error" });
+
+  // server error
+  res.status(500).json({
+    message: "error occurred",
+    error: "server side error",
+  });
 });
