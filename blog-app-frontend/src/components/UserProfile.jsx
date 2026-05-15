@@ -28,10 +28,13 @@ function UserProfile() {
       setLoading(true);
       try {
         //read articles of all authors
-        let res=await axios.get("import.meta.env.VITE_API_URL + /user-api/articles",{withCredentials:true})
+        let res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/user-api/articles`,
+          { withCredentials: true },
+        );
         //update articles state
-        if(res.status===200){
-          setArticles((await res).data.payload)
+        if (res.status === 200) {
+          setArticles((await res).data.payload);
         }
       } catch (err) {
         setError(err.response?.data?.error || "Something went wrong");
@@ -93,7 +96,9 @@ function UserProfile() {
           {/* Name */}
           <div>
             <p className="text-sm text-[#6e6e73]">Welcome back</p>
-            <h2 className="text-xl font-semibold text-[#1d1d1f]">{currentUser?.firstName}</h2>
+            <h2 className="text-xl font-semibold text-[#1d1d1f]">
+              {currentUser?.firstName}
+            </h2>
           </div>
         </div>
 
@@ -108,11 +113,15 @@ function UserProfile() {
 
       {/* ARTICLES SECTION */}
       <div className="mt-4">
-        <h3 className="text-lg font-semibold text-[#1d1d1f] mb-4">Latest Articles</h3>
+        <h3 className="text-lg font-semibold text-[#1d1d1f] mb-4">
+          Latest Articles
+        </h3>
 
         {/* EMPTY STATE */}
         {articles.length === 0 ? (
-          <p className="text-[#a1a1a6] text-sm text-center py-10">No articles available yet</p>
+          <p className="text-[#a1a1a6] text-sm text-center py-10">
+            No articles available yet
+          </p>
         ) : (
           <div className={articleGrid}>
             {articles.map((articleObj) => (
@@ -122,13 +131,20 @@ function UserProfile() {
                   <div>
                     <p className={articleTitle}>{articleObj.title}</p>
 
-                    <p className="text-sm text-[#6e6e73] mt-1">{articleObj.content.slice(0, 80)}...</p>
+                    <p className="text-sm text-[#6e6e73] mt-1">
+                      {articleObj.content.slice(0, 80)}...
+                    </p>
 
-                    <p className={`${timestampClass} mt-2`}>{formatDateIST(articleObj.createdAt)}</p>
+                    <p className={`${timestampClass} mt-2`}>
+                      {formatDateIST(articleObj.createdAt)}
+                    </p>
                   </div>
 
                   {/* ACTION */}
-                  <button className={`${ghostBtn} mt-auto pt-4`} onClick={() => navigateToArticleByID(articleObj)}>
+                  <button
+                    className={`${ghostBtn} mt-auto pt-4`}
+                    onClick={() => navigateToArticleByID(articleObj)}
+                  >
                     Read Article →
                   </button>
                 </div>

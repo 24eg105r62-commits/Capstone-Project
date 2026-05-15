@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
-import {toast} from 'react-hot-toast'
+import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router";
 
 import {
@@ -38,15 +38,19 @@ function WriteArticles() {
       //set loading true
       setLoading(true);
       //make POST req to save new article
-      let res = await axios.post("import.meta.env.VITE_API_URL + /author-api/article", articleObj, { withCredentials: true });
+      let res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/author-api/article`,
+        articleObj,
+        { withCredentials: true },
+      );
       //navigate to AuthorArticles
       if (res.status === 201) {
-        toast.success("Article published successfully")
+        toast.success("Article published successfully");
         navigate("../articles");
         // navigate("./author-profile/articles");
       }
     } catch (err) {
-       toast.error(err.response?.data?.error || "Failed to publish article");
+      toast.error(err.response?.data?.error || "Failed to publish article");
     } finally {
       setLoading(false);
     }
@@ -94,7 +98,9 @@ function WriteArticles() {
             <option value="web-development">Web Development</option>
           </select>
 
-          {errors.category && <p className={errorClass}>{errors.category.message}</p>}
+          {errors.category && (
+            <p className={errorClass}>{errors.category.message}</p>
+          )}
         </div>
 
         {/* Content */}
@@ -114,7 +120,9 @@ function WriteArticles() {
             })}
           />
 
-          {errors.content && <p className={errorClass}>{errors.content.message}</p>}
+          {errors.content && (
+            <p className={errorClass}>{errors.content.message}</p>
+          )}
         </div>
 
         {/* Submit */}

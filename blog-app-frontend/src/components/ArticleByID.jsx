@@ -35,7 +35,7 @@ function ArticleByID() {
   const { register, handleSubmit } = useForm();
 
   const user = useAuth((state) => state.currentUser);
-  console.log("user ",user)
+  console.log("user ", user);
 
   const [article, setArticle] = useState(location.state || null);
   const [loading, setLoading] = useState(false);
@@ -51,9 +51,9 @@ function ArticleByID() {
 
       try {
         const res = await axios.get(
-  `import.meta.env.VITE_API_URL + /user-api/article/${id}`,
-  { withCredentials: true }
-);
+          `${import.meta.env.VITE_API_URL}/user-api/article/${id}`,
+          { withCredentials: true },
+        );
 
         setArticle(res.data.payload);
       } catch (err) {
@@ -78,12 +78,14 @@ function ArticleByID() {
   const toggleArticleStatus = async () => {
     const newStatus = !article.isArticleActive;
 
-    const confirmMsg = newStatus ? "Restore this article?" : "Delete this article?";
+    const confirmMsg = newStatus
+      ? "Restore this article?"
+      : "Delete this article?";
     if (!window.confirm(confirmMsg)) return;
 
     try {
       const res = await axios.patch(
-        "http://localhost:4000/author-api/articles",
+        `${import.meta.env.VITE_API_URL}/author-api/articles`,
         { articleId: article._id, isArticleActive: newStatus },
         { withCredentials: true },
       );
@@ -117,15 +119,17 @@ function ArticleByID() {
     //add artcileId
     commentObj.articleId = article._id;
     console.log(commentObj);
-    let res = await axios.put("http://localhost:4000/user-api/articles", commentObj, { withCredentials: true });
+    let res = await axios.put(
+      `${import.meta.env.VITE_API_URL}/user-api/articles`,
+      commentObj,
+      { withCredentials: true },
+    );
     if (res.status === 200) {
-      
       setArticle(res.data.payload);
     }
   };
 
- // console.log("article",article)
-
+  // console.log("article",article)
 
   if (loading) return <p className={loadingClass}>Loading article...</p>;
   if (error) return <p className={errorClass}>{error}</p>;
@@ -172,7 +176,10 @@ function ArticleByID() {
               className={inputClass}
               placeholder="Write your comment here..."
             />
-            <button type="submit" className="bg-amber-600 text-white px-5 py-2 rounded-2xl mt-5">
+            <button
+              type="submit"
+              className="bg-amber-600 text-white px-5 py-2 rounded-2xl mt-5"
+            >
               Add comment
             </button>
           </form>
@@ -182,7 +189,9 @@ function ArticleByID() {
       {/* comments */}
       {/* Comments */}
       <div className={commentsWrapper}>
-        {article.comments?.length === 0 && <p className="text-[#a1a1a6] text-sm text-center">No comments yet</p>}
+        {article.comments?.length === 0 && (
+          <p className="text-[#a1a1a6] text-sm text-center">No comments yet</p>
+        )}
 
         {article.comments?.map((commentObj, index) => {
           const name = commentObj.user?.email || "User";
@@ -197,7 +206,9 @@ function ArticleByID() {
 
                   <div>
                     <p className={commentUser}>{name}</p>
-                    <p className={commentTime}>{formatDate(commentObj.createdAt || new Date())}</p>
+                    <p className={commentTime}>
+                      {formatDate(commentObj.createdAt || new Date())}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -210,7 +221,9 @@ function ArticleByID() {
       </div>
 
       {/* Footer */}
-      <div className={articleFooter}>Last updated: {formatDate(article.updatedAt)}</div>
+      <div className={articleFooter}>
+        Last updated: {formatDate(article.updatedAt)}
+      </div>
     </div>
   );
 }

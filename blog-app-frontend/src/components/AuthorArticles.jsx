@@ -33,7 +33,10 @@ function AuthorArticles() {
       try {
         setLoading(true);
         //read articles of current author
-        let res = await axios.get("import.meta.env.VITE_API_URL + /author-api/articles", { withCredentials: true });
+        let res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/author-api/articles`,
+          { withCredentials: true },
+        );
         if (res.status === 200) {
           setArticles(res.data.payload);
         }
@@ -66,15 +69,28 @@ function AuthorArticles() {
   if (error) return <p className={errorClass}>{error}</p>;
 
   if (articles.length === 0) {
-    return <div className={emptyStateClass}>You haven't published any articles yet.</div>;
+    return (
+      <div className={emptyStateClass}>
+        You haven't published any articles yet.
+      </div>
+    );
   }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {articles.map((article) => (
-        <div key={article._id} className={`${articleCardClass} relative flex flex-col`}>
+        <div
+          key={article._id}
+          className={`${articleCardClass} relative flex flex-col`}
+        >
           {/* Status Badge */}
-          <span className={article.isArticleActive ? articleStatusActive : articleStatusDeleted}>
+          <span
+            className={
+              article.isArticleActive
+                ? articleStatusActive
+                : articleStatusDeleted
+            }
+          >
             {article.isArticleActive ? "ACTIVE" : "DELETED"}
           </span>
 
@@ -86,7 +102,10 @@ function AuthorArticles() {
             <p className={articleExcerpt}>{article.content.slice(0, 60)}...</p>
           </div>
 
-          <button className={`${ghostBtn} mt-auto pt-4`} onClick={() => openArticle(article)}>
+          <button
+            className={`${ghostBtn} mt-auto pt-4`}
+            onClick={() => openArticle(article)}
+          >
             Read Article →
           </button>
         </div>

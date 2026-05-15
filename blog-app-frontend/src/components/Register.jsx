@@ -29,7 +29,7 @@ function Register() {
   //When user registration submitted
   const onUserRegister = async (userObj) => {
     console.log(userObj);
-    let {profileImageUrl}=userObj
+    let { profileImageUrl } = userObj;
     // file + userObj -->FormData
     //create ForMData object
     const formData = new FormData();
@@ -43,12 +43,16 @@ function Register() {
     if (profileImageUrl?.[0]) {
       formData.append("profileImageUrl", profileImageUrl[0]);
     }
-   console.log(profileImageUrl)
+    console.log(profileImageUrl);
     try {
       //start loading
       setLoading(true);
       //make HTTP POST req to create User in backend
-      let res = await axios.post("import.meta.env.VITE_API_URL + /auth/users", formData,{withCredentials:true});
+      let res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/auth/users`,
+        formData,
+        { withCredentials: true },
+      );
 
       if (res.status === 201) {
         //navigate to Login
@@ -63,7 +67,9 @@ function Register() {
   };
 
   return (
-    <div className={`${pageBackground} flex items-center justify-center py-16 px-4`}>
+    <div
+      className={`${pageBackground} flex items-center justify-center py-16 px-4`}
+    >
       <div className={formCard}>
         <h2 className={formTitle}>Create an Account</h2>
 
@@ -127,7 +133,9 @@ function Register() {
                   validate: (v) => v.trim().length > 0 || "Cannot be empty",
                 })}
               />
-              {errors.firstName && <p className={errorClass}>{errors.firstName.message}</p>}
+              {errors.firstName && (
+                <p className={errorClass}>{errors.firstName.message}</p>
+              )}
             </div>
 
             <div className="flex-1">
@@ -143,7 +151,9 @@ function Register() {
                   },
                 })}
               />
-              {errors.lastName && <p className={errorClass}>{errors.lastName.message}</p>}
+              {errors.lastName && (
+                <p className={errorClass}>{errors.lastName.message}</p>
+              )}
             </div>
           </div>
 
@@ -158,7 +168,9 @@ function Register() {
                 required: "Email is required",
               })}
             />
-            {errors.email && <p className={errorClass}>{errors.email.message}</p>}
+            {errors.email && (
+              <p className={errorClass}>{errors.email.message}</p>
+            )}
           </div>
 
           {/* PASSWORD */}
@@ -172,7 +184,9 @@ function Register() {
                 required: "Password is required",
               })}
             />
-            {errors.password && <p className={errorClass}>{errors.password.message}</p>}
+            {errors.password && (
+              <p className={errorClass}>{errors.password.message}</p>
+            )}
           </div>
 
           {/* PROFILE IMAGE */}
@@ -187,7 +201,10 @@ function Register() {
                 validate: {
                   fileType: (files) => {
                     if (!files?.[0]) return true;
-                    return ["image/png", "image/jpeg"].includes(files[0].type) || "Only JPG/PNG allowed";
+                    return (
+                      ["image/png", "image/jpeg"].includes(files[0].type) ||
+                      "Only JPG/PNG allowed"
+                    );
                   },
                   fileSize: (files) => {
                     if (!files?.[0]) return true;
@@ -203,11 +220,17 @@ function Register() {
               }}
             />
 
-            {errors.profileImageUrl && <p className={errorClass}>{errors.profileImageUrl.message}</p>}
+            {errors.profileImageUrl && (
+              <p className={errorClass}>{errors.profileImageUrl.message}</p>
+            )}
             {/* image preview */}
             {preview && (
               <div className="mt-3 flex justify-center">
-                <img src={preview} alt="" className="w-24 h-24 rounded-full object-cover" />
+                <img
+                  src={preview}
+                  alt=""
+                  className="w-24 h-24 rounded-full object-cover"
+                />
               </div>
             )}
           </div>
