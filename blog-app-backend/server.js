@@ -17,11 +17,11 @@ const app = exp();
 app.use(
   cors({
     origin: [
-      "http://localhost:5173", // local frontend
-      "import.meta.env.VITE_API_URL", // deployed frontend
+      "http://localhost:5173",
+      "https://capstone-project-fdhoih3qv-24eg105r62-7023s-projects.vercel.app",
     ],
     credentials: true,
-  })
+  }),
 );
 
 app.use(cookieParser());
@@ -46,9 +46,7 @@ const connectDB = async () => {
 
     const port = process.env.PORT || 4000;
 
-    app.listen(port, () =>
-      console.log(`server listening on ${port}`)
-    );
+    app.listen(port, () => console.log(`server listening on ${port}`));
   } catch (err) {
     console.log("DB ERROR:", err);
   }
