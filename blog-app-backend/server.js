@@ -16,11 +16,8 @@ const app = exp();
 // CORS configuration
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://capstone-project-fdhoih3qv-24eg105r62-7023s-projects.vercel.app",
-    ],
-    credentials: true,
+    origin: true, // allows all origins dynamically (Vercel safe)
+    credentials: true, // required for cookies/auth
   }),
 );
 
