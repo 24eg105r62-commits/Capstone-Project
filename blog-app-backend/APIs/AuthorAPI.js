@@ -11,12 +11,12 @@ authorApp.post("/article",verifyToken("AUTHOR"),async(req,res)=>{
     //console.log(req.user)
     let user=req.user
     let author = await UserModel.findById(articleObj.author)
-    
-    if(author.email!=user.email){
-        return res.status(403).json({message:"you are not authorized"})
-    }
+
     if(!author){
         return res.status(404).json({message:"invalid author"})
+    }
+    if(author.email!=user.email){
+        return res.status(403).json({message:"you are not authorized"})
     }
     if(author.role!="AUTHOR"){
         return res.status(403).json({message:"only author can publish"})
