@@ -5,19 +5,26 @@ function Home() {
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/user-api/articles`,
-        );
-        const data = await response.json();
-        setArticles(response.data.payload);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchArticles();
-  }, []);
+  const fetchArticles = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/user-api/articles`,
+        {
+          credentials: "include",
+        }
+      );
+
+      const data = await response.json();
+
+      setArticles(data.payload || []);
+    } catch (error) {
+      console.error(error);
+      setArticles([]);
+    }
+  };
+
+  fetchArticles();
+}, []);
 
   return (
     <div>
