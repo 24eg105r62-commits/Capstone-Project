@@ -12,6 +12,7 @@ import ArticleByID from "./components/ArticleByID";
 import { Toaster } from "react-hot-toast";
 import Unauthorized from "./components/Unauthorized";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminProfile from "./components/AdminProfile";
 
 function App() {
   const routerObj = createBrowserRouter([
@@ -69,6 +70,14 @@ function App() {
         {
           path: "edit-article",
           element: <EditArticle />,
+        },
+        {
+          path: "admin-profile",
+          element: (
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminProfile />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "unauthorized",

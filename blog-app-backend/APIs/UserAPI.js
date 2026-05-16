@@ -4,8 +4,8 @@ import { ArticleModel } from '../models/ArticleModel.js'
 export const userApp=exp.Router()
 
 //read articles of all authors
-userApp.get("/articles",verifyToken("USER"),async(req,res)=>{
-    //read articles 
+userApp.get("/articles",verifyToken("USER","AUTHOR","ADMIN"),async(_req,res)=>{
+    //read articles
     const articleList=await ArticleModel.find({isArticleActive:true})
 
     res.status(200).json({message:"articles",payload:articleList})
