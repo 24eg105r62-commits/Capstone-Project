@@ -126,7 +126,7 @@ function AdminProfile() {
       {error && <p className={errorClass}>{error}</p>}
 
       {!loading && !error && activeTab === TAB_USERS && (
-        <UsersTable users={users} roleBadge={roleBadge} />
+        <UsersTable users={users} setUsers={setUsers} roleBadge={roleBadge} />
       )}
 
       {!loading && !error && activeTab === TAB_ARTICLES && (
@@ -136,7 +136,31 @@ function AdminProfile() {
   );
 }
 
-function UsersTable({ users, roleBadge }) {
+function UsersTable({ users, setUsers, roleBadge }) {
+  const [togglingEmail, setTogglingEmail] = useState(null);
+
+  const handleToggleBlock = async (email) => {
+    setTogglingEmail(email);
+    try {
+      const res = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/admin-api/block/${email}`,
+        {},
+        { withCredentials: true },
+      );
+      if (res.status === 200) {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.email === email ? { ...u, isUserActive: res.data.payload.isUserActive } : u,
+          ),
+        );
+      }
+    } catch (err) {
+      console.error("Toggle block failed:", err);
+    } finally {
+      setTogglingEmail(null);
+    }
+  };
+
   if (users.length === 0)
     return <p className={emptyStateClass}>No users or authors found.</p>;
 
@@ -149,6 +173,7 @@ function UsersTable({ users, roleBadge }) {
             <th className="px-5 py-3 font-medium text-[#6e6e73]">Email</th>
             <th className="px-5 py-3 font-medium text-[#6e6e73]">Role</th>
             <th className="px-5 py-3 font-medium text-[#6e6e73]">Status</th>
+            <th className="px-5 py-3 font-medium text-[#6e6e73]">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -174,6 +199,23 @@ function UsersTable({ users, roleBadge }) {
                 >
                   {user.isUserActive ? "Active" : "Blocked"}
                 </span>
+              </td>
+              <td className="px-5 py-3">
+                <button
+                  disabled={togglingEmail === user.email}
+                  onClick={() => handleToggleBlock(user.email)}
+                  className={`text-xs font-medium px-3 py-1.5 rounded-full transition disabled:opacity-50 ${
+                    user.isUserActive
+                      ? "bg-[#ff3b30]/10 text-[#cc2f26] hover:bg-[#ff3b30]/20"
+                      : "bg-[#34c759]/10 text-[#248a3d] hover:bg-[#34c759]/20"
+                  }`}
+                >
+                  {togglingEmail === user.email
+                    ? "..."
+                    : user.isUserActive
+                    ? "Block"
+                    : "Unblock"}
+                </button>
               </td>
             </tr>
           ))}

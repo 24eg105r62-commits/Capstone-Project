@@ -18,5 +18,10 @@ adminApp.patch("/block/:email",verifyToken("ADMIN"),async(req,res)=>{
     if(!user){
         return res.status(404).json({message:"user not found"})
     }
-    
+    user.isUserActive = !user.isUserActive
+    await user.save()
+    res.status(200).json({
+        message: user.isUserActive ? "User unblocked" : "User blocked",
+        payload: user
+    })
 })
