@@ -1,5 +1,6 @@
 import exp from 'express'
 import { UserModel } from '../models/UserModel.js'
+import { ArticleModel } from '../models/ArticleModel.js'
 import { verifyToken } from '../middlewares/verifyToken.js'
 export const adminApp = exp.Router()
 
@@ -9,6 +10,20 @@ adminApp.get("/users-authors",verifyToken("ADMIN"),async(req,res)=>{
     const usersAndAuthors=await UserModel.find({role:{$in:["USER","AUTHOR"]}})
 
 res.status(200).json({message:"users and authors",payload:usersAndAuthors})
+})
+
+//soft delete or restore an article
+adminApp.patch("/article/:id",verifyToken("ADMIN"),async(req,res)=>{
+    const article = await ArticleModel.findById(req.params.id)
+    if(!article){
+        return res.status(404).json({message:"article not found"})
+    }
+    article.isArticleActive = !article.isArticleActive
+    await article.save()
+    res.status(200).json({
+        message: article.isArticleActive ? "Article restored" : "Article deleted",
+        payload: article
+    })
 })
 
 //block or active user or author

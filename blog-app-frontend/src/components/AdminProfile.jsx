@@ -130,7 +130,7 @@ function AdminProfile() {
       )}
 
       {!loading && !error && activeTab === TAB_ARTICLES && (
-        <ArticlesGrid articles={articles} navigate={navigate} />
+        <ArticlesGrid articles={articles} setArticles={setArticles} navigate={navigate} />
       )}
     </div>
   );
@@ -225,7 +225,33 @@ function UsersTable({ users, setUsers, roleBadge }) {
   );
 }
 
-function ArticlesGrid({ articles, navigate }) {
+function ArticlesGrid({ articles, setArticles, navigate }) {
+  const [togglingId, setTogglingId] = useState(null);
+
+  const handleToggleDelete = async (articleId) => {
+    setTogglingId(articleId);
+    try {
+      const res = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/admin-api/article/${articleId}`,
+        {},
+        { withCredentials: true },
+      );
+      if (res.status === 200) {
+        setArticles((prev) =>
+          prev.map((a) =>
+            a._id === articleId
+              ? { ...a, isArticleActive: res.data.payload.isArticleActive }
+              : a,
+          ),
+        );
+      }
+    } catch (err) {
+      console.error("Toggle article failed:", err);
+    } finally {
+      setTogglingId(null);
+    }
+  };
+
   if (articles.length === 0)
     return <p className={emptyStateClass}>No articles found.</p>;
 
@@ -240,7 +266,7 @@ function ArticlesGrid({ articles, navigate }) {
                 : "bg-[#ff3b30]/20 text-[#cc2f26]"
             }`}
           >
-            {article.isArticleActive ? "ACTIVE" : "INACTIVE"}
+            {article.isArticleActive ? "ACTIVE" : "DELETED"}
           </span>
 
           <div className="flex flex-col gap-2">
@@ -254,12 +280,30 @@ function ArticlesGrid({ articles, navigate }) {
             </p>
           </div>
 
-          <button
-            className={`${ghostBtn} mt-auto pt-4`}
-            onClick={() => navigate(`/article/${article._id}`, { state: article })}
-          >
-            Read Article →
-          </button>
+          <div className="flex items-center justify-between mt-auto pt-4">
+            <button
+              className={ghostBtn}
+              onClick={() => navigate(`/article/${article._id}`, { state: article })}
+            >
+              Read →
+            </button>
+
+            <button
+              disabled={togglingId === article._id}
+              onClick={() => handleToggleDelete(article._id)}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full transition disabled:opacity-50 ${
+                article.isArticleActive
+                  ? "bg-[#ff3b30]/10 text-[#cc2f26] hover:bg-[#ff3b30]/20"
+                  : "bg-[#34c759]/10 text-[#248a3d] hover:bg-[#34c759]/20"
+              }`}
+            >
+              {togglingId === article._id
+                ? "..."
+                : article.isArticleActive
+                ? "Delete"
+                : "Restore"}
+            </button>
+          </div>
         </div>
       ))}
     </div>
